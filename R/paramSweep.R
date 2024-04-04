@@ -15,13 +15,21 @@ paramSweep <- function(seu, PCs=1:10, sct = FALSE, num.cores=1) {
   ## Down-sample cells to 10000 (when applicable) for computational effiency
   if (nrow(seu@meta.data) > 10000) {
     real.cells <- rownames(seu@meta.data)[sample(1:nrow(seu@meta.data), 10000, replace=FALSE)]
-    data <- seu@assays$RNA$counts[ , real.cells]
+    if (sct == T) {
+      data <- GetAssayData(object, assay = 'SCT', slot = 'counts')[ , real.cells]
+    } else if (sct == F) {
+       data <- GetAssayData(object, assay = 'RNA', slot = 'counts')[ , real.cells]
+    }
     n.real.cells <- ncol(data)
   }
 
   if (nrow(seu@meta.data) <= 10000){
     real.cells <- rownames(seu@meta.data)
-    data <- seu@assays$RNA$counts
+    if (sct == T) {
+      data <- GetAssayData(object, assay = 'SCT', slot = 'counts')[ , real.cells]
+    } else if (sct == F) {
+       data <- GetAssayData(object, assay = 'RNA', slot = 'counts')[ , real.cells]
+    }
     n.real.cells <- ncol(data)
   }
 
